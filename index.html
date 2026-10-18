@@ -9,7 +9,13 @@ body{font-family:"Segoe UI",system-ui,sans-serif;background:linear-gradient(#cfe
 canvas{display:block;position:fixed;inset:0;touch-action:none}
 .card{background:rgba(255,255,255,.94);border:1px solid #dbe3ec;border-radius:14px;box-shadow:0 2px 10px rgba(30,60,90,.12)}
 #panel{position:fixed;left:12px;top:12px;width:min(370px,calc(100% - 24px));padding:14px 16px;max-height:55vh;overflow:auto;z-index:5}
-#panel h1{font-size:18px;margin:0 0 4px}
+#panel h1{font-size:18px;margin:0 0 8px}
+#togglePanel{margin:0 0 8px;padding:6px 12px;font-size:13px}
+#panel.collapsed .eq,
+#panel.collapsed #legend,
+#panel.collapsed .btns,
+#panel.collapsed .hint{display:none}
+#panel.collapsed{max-height:none;overflow:visible}
 #panel .eq{font-weight:600;font-size:14px;margin:0 0 8px}
 .row{display:flex;align-items:center;gap:8px;margin:7px 0;font-size:14px}
 .row input{width:16px;height:16px}
@@ -28,6 +34,7 @@ button:focus-visible{outline:2px solid #1b6fd1;outline-offset:2px}
 </style></head><body>
 <div id="panel" class="card">
  <h1>Quang hợp ở cây cà phê</h1>
+ <button id="togglePanel" type="button" aria-expanded="true">Thu gọn nội dung ▲</button>
  <p class="eq">6CO₂ + 6H₂O → C₆H₁₂O₆ + 6O₂</p>
  <div id="legend"></div>
  <div class="btns"><button id="pause">Tạm dừng</button><button id="reset">Đặt lại góc nhìn</button><button id="seeroot">Xem rễ</button><button id="seestem">Xem thân</button><button id="spin">Tự xoay: bật</button></div>
@@ -133,6 +140,13 @@ lab('Khí khổng','stomata',()=>stoPts[6].clone().add(V(0,-.5,0)));lab('Thân',
 lab('Đất','soil',()=>V(-2.4,-.4,2.2));lab('Mạch gỗ','xylem',()=>V(-.6,3.5,0));lab('Mạch rây','phloem',()=>V(.6,2.7,0));lab('Lông hút','hair',()=>rpaths[0][rpaths[0].length-1].clone().add(V(0,-.3,0)));lab('Lục lạp','chloroplast',()=>CP.clone().add(V(0,-2.2,0)));
 lab('Chu trình Calvin','calvin',()=>KP.clone().add(V(0,2.5,0)));lab('RuDP (5C)','rudp',()=>nodePos.rudp.clone().add(V(0,.6,0)));
 lab('APG (3C)','pga',()=>nodePos.pga.clone().add(V(.3,-.6,0)));lab('AlPG (3C)','alpg',()=>nodePos.alpg.clone().add(V(-.3,-.6,0)));
+const panel=document.getElementById('panel');
+const togglePanel=document.getElementById('togglePanel');
+togglePanel.onclick=()=>{
+  const collapsed=panel.classList.toggle('collapsed');
+  togglePanel.textContent=collapsed?'Mở rộng nội dung ▼':'Thu gọn nội dung ▲';
+  togglePanel.setAttribute('aria-expanded',String(!collapsed));
+};
 const info=document.getElementById('info');
 function show(k){const d=INFO[k];if(!d)return;info.querySelector('h2').textContent=d[0];info.querySelector('ul').innerHTML=d[1].map(x=>`<li>${x}</li>`).join('');info.style.display='block';
  if(k==='chloroplast'||k==='grana')go(CP,9);else if(k==='calvin'||nodePos[k])go(KP,9)}
